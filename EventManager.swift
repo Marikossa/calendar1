@@ -119,20 +119,20 @@ class EventManager: ObservableObject {
     let eventTypes = ["Personal", "Meeting", "Birthday", "Appointment", "Social", "Other"]
     
     let eventColors: [String: String] = [
-        "Personal": "#FFE5EC",
-        "Meeting": "#9B7EBD",
-        "Birthday": "#FFB6C6",
-        "Appointment": "#D5E8F5",
-        "Social": "#E6D5F5",
-        "Other": "#F0F8E8"
+        "personal": "#FFE5EC",
+        "meeting": "#9B7EBD",
+        "birthday": "#FFB6C6",
+        "appointment": "#D5E8F5",
+        "social": "#E6D5F5",
+        "other": "#F0F8E8"
     ]
     
     let eventIcons: [String: String] = [
-        "Personal": "heart",
-        "Meeting": "briefcase",
-        "Birthday": "cake",
-        "Appointment": "calendar",
-        "Social": "users",
-        "Other": "star"
+        "personal": "heart",
+        "meeting": "briefcase",
+        "birthday": "gift",
+        "appointment": "calendar",
+        "social": "person.2",
+        "other": "star"
     ]
 }
