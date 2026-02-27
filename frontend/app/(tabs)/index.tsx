@@ -65,30 +65,41 @@ export default function CalendarScreen() {
     const marked = {};
 
     eventsList.forEach((event) => {
-      const date = event.start_date.split('T')[0];
-      if (!marked[date]) {
-        marked[date] = { dots: [], marked: true };
+      const startDate = parseISO(event.start_date.split('T')[0]);
+      const endDate = event.end_date ? parseISO(event.end_date.split('T')[0]) : startDate;
+      
+      // Mark all days in the event range
+      const daysDiff = differenceInDays(endDate, startDate);
+      for (let i = 0; i <= daysDiff; i++) {
+        const currentDate = format(addDays(startDate, i), 'yyyy-MM-dd');
+        if (!marked[currentDate]) {
+          marked[currentDate] = { dots: [], marked: true };
+        }
+        marked[currentDate].dots.push({
+          color: EVENT_TYPE_CONFIG[event.event_type]?.color || '#4A2C5C',
+        });
       }
-      marked[date].dots.push({
-        color: EVENT_TYPE_CONFIG[event.event_type]?.color || '#4A2C5C',
-      });
     });
 
     // Add selection
     if (marked[selectedDate]) {
       marked[selectedDate].selected = true;
-      marked[selectedDate].selectedColor = '#E6D5F5';
+      marked[selectedDate].selectedColor = '#FFB6D9';
     } else {
-      marked[selectedDate] = { selected: true, selectedColor: '#E6D5F5' };
+      marked[selectedDate] = { selected: true, selectedColor: '#FFB6D9' };
     }
 
     setMarkedDates(marked);
   };
 
   const loadEventsForDay = (date) => {
+    const selectedDay = parseISO(date);
     const dayEvents = events.filter((event) => {
-      const eventDate = event.start_date.split('T')[0];
-      return eventDate === date;
+      const eventStart = parseISO(event.start_date.split('T')[0]);
+      const eventEnd = event.end_date ? parseISO(event.end_date.split('T')[0]) : eventStart;
+      
+      // Check if selected day falls within event date range
+      return selectedDay >= eventStart && selectedDay <= eventEnd;
     });
     setSelectedDayEvents(dayEvents);
   };
