@@ -171,17 +171,15 @@ export default function CalendarScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Decorative Header with Background Image */}
-      <ImageBackground
-        source={require('../../assets/images/lady-background.png')}
-        style={styles.header}
-        resizeMode="cover"
-      >
-        <View style={styles.headerOverlay}>
-          <Text style={styles.headerTitle}>Lady's Calendar</Text>
-        </View>
-      </ImageBackground>
+    <ImageBackground
+      source={require('../../assets/images/lady-background.png')}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Lady's Calendar</Text>
+      </View>
 
       <ScrollView 
         style={styles.scrollView}
@@ -189,8 +187,8 @@ export default function CalendarScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#9B7EBD"
-            colors={['#9B7EBD']}
+            tintColor="#8B4789"
+            colors={['#8B4789']}
           />
         }
       >
@@ -202,19 +200,19 @@ export default function CalendarScreen() {
             markedDates={markedDates}
             markingType="multi-dot"
             theme={{
-              backgroundColor: '#FFF9F5',
-              calendarBackground: '#FFF9F5',
-              textSectionTitleColor: '#4A2C5C',
-              selectedDayBackgroundColor: '#E6D5F5',
-              selectedDayTextColor: '#4A2C5C',
-              todayTextColor: '#9B7EBD',
-              dayTextColor: '#4A2C5C',
-              textDisabledColor: '#D3D3D3',
-              dotColor: '#9B7EBD',
-              selectedDotColor: '#4A2C5C',
-              arrowColor: '#9B7EBD',
-              monthTextColor: '#4A2C5C',
-              indicatorColor: '#9B7EBD',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              calendarBackground: 'rgba(255, 255, 255, 0.95)',
+              textSectionTitleColor: '#8B4789',
+              selectedDayBackgroundColor: '#FFB6D9',
+              selectedDayTextColor: '#8B4789',
+              todayTextColor: '#D946A6',
+              dayTextColor: '#5C3D5E',
+              textDisabledColor: '#D3B5D3',
+              dotColor: '#D946A6',
+              selectedDotColor: '#8B4789',
+              arrowColor: '#8B4789',
+              monthTextColor: '#8B4789',
+              indicatorColor: '#D946A6',
               textDayFontFamily: 'System',
               textMonthFontFamily: 'System',
               textDayHeaderFontFamily: 'System',
