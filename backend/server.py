@@ -123,7 +123,10 @@ def event_helper(event) -> dict:
 
 def expand_recurring_events(event: dict, start_date: datetime, end_date: datetime) -> List[dict]:
     """Expand a recurring event into individual occurrences within the date range"""
+    print(f"DEBUG: Expanding event {event.get('_id')} with recurrence {event.get('recurrence')}")
+    
     if not event.get("recurrence") or event["recurrence"].get("type") == "none":
+        print("DEBUG: No recurrence, returning original event")
         return [event]
     
     recurrence = event["recurrence"]
@@ -139,6 +142,7 @@ def expand_recurring_events(event: dict, start_date: datetime, end_date: datetim
     
     freq = freq_map.get(recurrence["type"])
     if not freq:
+        print(f"DEBUG: Unknown frequency {recurrence['type']}")
         return [event]
     
     # Set up rrule parameters
@@ -159,10 +163,13 @@ def expand_recurring_events(event: dict, start_date: datetime, end_date: datetim
     if recurrence["type"] == "weekly" and recurrence.get("days_of_week"):
         rrule_params["byweekday"] = recurrence["days_of_week"]
     
+    print(f"DEBUG: rrule params: {rrule_params}")
+    
     # Generate occurrences
     occurrences = []
     first_occurrence = True
     for occurrence_date in rrule(**rrule_params):
+        print(f"DEBUG: Processing occurrence at {occurrence_date}")
         if start_date <= occurrence_date <= end_date:
             occurrence_event = event.copy()
             # Calculate duration
@@ -177,13 +184,16 @@ def expand_recurring_events(event: dict, start_date: datetime, end_date: datetim
             # First occurrence is the original event, subsequent ones are recurring instances
             if first_occurrence:
                 occurrence_event["is_recurring_instance"] = False
+                print(f"DEBUG: First occurrence (original) at {occurrence_date}")
                 first_occurrence = False
             else:
                 occurrence_event["is_recurring_instance"] = True
                 occurrence_event["original_event_id"] = str(event["_id"])
+                print(f"DEBUG: Recurring instance at {occurrence_date}")
             
             occurrences.append(occurrence_event)
     
+    print(f"DEBUG: Generated {len(occurrences)} occurrences")
     return occurrences
 
 # Routes
