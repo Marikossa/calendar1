@@ -36,9 +36,9 @@ export default function AddEventScreen() {
   const [saving, setSaving] = useState(false);
   const [duration, setDuration] = useState(1); // Duration in days for Red days
 
-  // Update end date when event type changes to red_days or duration changes
+  // Update end date when event type changes to red_days/vacation or duration changes
   useEffect(() => {
-    if (eventType === 'red_days') {
+    if (eventType === 'red_days' || eventType === 'vacation') {
       const newEndDate = new Date(startDate);
       newEndDate.setDate(newEndDate.getDate() + duration - 1);
       setEndDate(newEndDate);
