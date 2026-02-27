@@ -124,11 +124,16 @@ export default function UpcomingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Decorative Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Upcoming Events</Text>
-        <Text style={styles.headerSubtitle}>Your schedule awaits</Text>
-      </View>
+      {/* Decorative Header with Background Image */}
+      <ImageBackground
+        source={require('../../assets/images/lady-background.png')}
+        style={styles.header}
+        resizeMode="cover"
+      >
+        <View style={styles.headerOverlay}>
+          <Text style={styles.headerTitle}>Upcoming Events</Text>
+        </View>
+      </ImageBackground>
 
       <ScrollView
         style={styles.scrollView}
