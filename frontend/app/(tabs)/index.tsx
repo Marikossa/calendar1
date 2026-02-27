@@ -257,7 +257,7 @@ export default function CalendarScreen() {
       >
         <Ionicons name="add" size={32} color="#FFF" />
       </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 }
 
