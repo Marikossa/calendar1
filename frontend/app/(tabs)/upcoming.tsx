@@ -73,8 +73,21 @@ export default function UpcomingScreen() {
     return format(date, 'EEEE, MMM d');
   };
 
+  // Group events by month
+  const groupEventsByMonth = (eventsList) => {
+    const grouped = {};
+    eventsList.forEach((event) => {
+      const monthYear = format(parseISO(event.start_date), 'MMMM yyyy');
+      if (!grouped[monthYear]) {
+        grouped[monthYear] = [];
+      }
+      grouped[monthYear].push(event);
+    });
+    return grouped;
+  };
+
   const renderEventItem = (event) => {
-    const config = EVENT_TYPE_CONFIG[event.event_type] || EVENT_TYPE_CONFIG.other;
+    const config = EVENT_TYPE_CONFIG[event.event_type] || EVENT_TYPE_CONFIG.meeting;
     const dateLabel = getDateLabel(event.start_date);
     const startTime = event.all_day
       ? 'All day'
@@ -82,7 +95,7 @@ export default function UpcomingScreen() {
 
     return (
       <TouchableOpacity
-        key={event._id}
+        key={`${event._id}-${event.start_date}`}
         style={[styles.eventCard, { borderLeftColor: config.color }]}
         onPress={() => handleEventPress(event)}
       >
@@ -92,9 +105,9 @@ export default function UpcomingScreen() {
         <View style={styles.eventDetails}>
           <Text style={styles.eventTitle}>{event.title}</Text>
           <View style={styles.eventMeta}>
-            <Ionicons name="calendar-outline" size={14} color="#9B7EBD" />
+            <Ionicons name="calendar-outline" size={14} color="#8B4789" />
             <Text style={styles.eventDate}>{dateLabel}</Text>
-            <Ionicons name="time-outline" size={14} color="#9B7EBD" style={styles.timeIcon} />
+            <Ionicons name="time-outline" size={14} color="#8B4789" style={styles.timeIcon} />
             <Text style={styles.eventTime}>{startTime}</Text>
           </View>
           {event.description && (
@@ -104,7 +117,7 @@ export default function UpcomingScreen() {
           )}
           {event.recurrence && event.recurrence.type !== 'none' && (
             <View style={styles.recurringBadge}>
-              <Ionicons name="repeat" size={12} color="#9B7EBD" />
+              <Ionicons name="repeat" size={12} color="#8B4789" />
               <Text style={styles.recurringText}>Recurring</Text>
             </View>
           )}
