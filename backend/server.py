@@ -64,6 +64,7 @@ class Event(BaseModel):
     icon: str
     recurrence: Optional[RecurrenceRule] = None
     reminders: List[Reminder] = []
+    guests: List[str] = []  # List of email addresses
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
     is_recurring_instance: Optional[bool] = False
