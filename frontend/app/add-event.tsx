@@ -473,6 +473,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4A2C5C',
   },
+  durationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#FFB5B5',
+  },
+  durationButton: {
+    padding: 8,
+  },
+  durationText: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#8B4789',
+    marginHorizontal: 32,
+  },
+  durationHint: {
+    fontSize: 14,
+    color: '#8B4789',
+    textAlign: 'center',
+    marginTop: 12,
+    fontStyle: 'italic',
+  },
   saveButton: {
     flexDirection: 'row',
     backgroundColor: '#9B7EBD',
