@@ -151,9 +151,16 @@ export default function UpcomingScreen() {
         }
       >
         {loading ? (
-          <ActivityIndicator size="large" color="#9B7EBD" style={styles.loader} />
+          <ActivityIndicator size="large" color="#8B4789" style={styles.loader} />
         ) : events.length > 0 ? (
-          events.map(renderEventItem)
+          <>
+            {Object.entries(groupEventsByMonth(events)).map(([monthYear, monthEvents]) => (
+              <View key={monthYear} style={styles.monthSection}>
+                <Text style={styles.monthHeader}>{monthYear}</Text>
+                {monthEvents.map(renderEventItem)}
+              </View>
+            ))}
+          </>
         ) : (
           <View style={styles.emptyState}>
             <Ionicons name="calendar-outline" size={64} color="#D3D3D3" />
