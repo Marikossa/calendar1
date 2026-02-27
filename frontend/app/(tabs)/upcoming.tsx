@@ -208,6 +208,17 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
   },
+  monthSection: {
+    marginBottom: 24,
+  },
+  monthHeader: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#8B4789',
+    marginBottom: 12,
+    paddingHorizontal: 8,
+    fontStyle: 'italic',
+  },
   eventCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 16,
