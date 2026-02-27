@@ -11,11 +11,13 @@ const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 export default function CalendarScreen() {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [currentMonth, setCurrentMonth] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [events, setEvents] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+  const [showYearPicker, setShowYearPicker] = useState(false);
 
   // Reload events when screen comes into focus
   useFocusEffect(
