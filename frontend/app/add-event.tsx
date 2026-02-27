@@ -16,33 +16,9 @@ import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import * as Notifications from 'expo-notifications';
+import { EVENT_TYPES, RECURRENCE_TYPES, REMINDER_OPTIONS } from './constants';
 
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-const EVENT_TYPES = [
-  { id: 'meeting', label: 'Meeting', icon: 'briefcase', color: '#9B7EBD' },
-  { id: 'birthday', label: 'Birthday', icon: 'cake', color: '#FFB6C6' },
-  { id: 'appointment', label: 'Appointment', icon: 'calendar-check', color: '#A8D5E2' },
-  { id: 'social', label: 'Social', icon: 'people', color: '#E6D5F5' },
-  { id: 'personal', label: 'Personal', icon: 'heart', color: '#FFD6E8' },
-  { id: 'other', label: 'Other', icon: 'star', color: '#D4AF37' },
-];
-
-const RECURRENCE_TYPES = [
-  { id: 'none', label: 'Does not repeat' },
-  { id: 'daily', label: 'Daily' },
-  { id: 'weekly', label: 'Weekly' },
-  { id: 'monthly', label: 'Monthly' },
-  { id: 'yearly', label: 'Yearly' },
-];
-
-const REMINDER_OPTIONS = [
-  { value: 5, label: '5 minutes before' },
-  { value: 15, label: '15 minutes before' },
-  { value: 30, label: '30 minutes before' },
-  { value: 60, label: '1 hour before' },
-  { value: 1440, label: '1 day before' },
-];
 
 export default function AddEventScreen() {
   const router = useRouter();
