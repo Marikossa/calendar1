@@ -1,0 +1,340 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { format } from 'date-fns';
+
+const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+
+const EVENT_TYPE_CONFIG = {
+  meeting: { icon: 'briefcase', color: '#9B7EBD' },
+  birthday: { icon: 'cake', color: '#FFB6C6' },
+  appointment: { icon: 'calendar-check', color: '#A8D5E2' },
+  social: { icon: 'people', color: '#E6D5F5' },
+  personal: { icon: 'heart', color: '#FFD6E8' },
+  other: { icon: 'star', color: '#D4AF37' },
+};
+
+export default function CalendarScreen() {
+  const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [events, setEvents] = useState([]);
+  const [markedDates, setMarkedDates] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [selectedDayEvents, setSelectedDayEvents] = useState([]);
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  useEffect(() => {
+    loadEventsForDay(selectedDate);
+  }, [selectedDate, events]);
+
+  const loadEvents = async () => {
+    try {
+      setLoading(true);
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 1);
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 3);
+
+      const response = await fetch(
+        `${EXPO_PUBLIC_BACKEND_URL}/api/events?start_date=${startDate.toISOString()}&end_date=${endDate.toISOString()}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data);
+        createMarkedDates(data);
+      }
+    } catch (error) {
+      console.error('Error loading events:', error);
+      Alert.alert('Error', 'Failed to load events');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createMarkedDates = (eventsList) => {
+    const marked = {};
+
+    eventsList.forEach((event) => {
+      const date = event.start_date.split('T')[0];
+      if (!marked[date]) {
+        marked[date] = { dots: [] };
+      }
+      marked[date].dots.push({
+        color: EVENT_TYPE_CONFIG[event.event_type]?.color || '#4A2C5C',
+      });
+    });
+
+    // Add selection
+    if (marked[selectedDate]) {
+      marked[selectedDate].selected = true;
+      marked[selectedDate].selectedColor = '#E6D5F5';
+    } else {
+      marked[selectedDate] = { selected: true, selectedColor: '#E6D5F5' };
+    }
+
+    setMarkedDates(marked);
+  };
+
+  const loadEventsForDay = (date) => {
+    const dayEvents = events.filter((event) => {
+      const eventDate = event.start_date.split('T')[0];
+      return eventDate === date;
+    });
+    setSelectedDayEvents(dayEvents);
+  };
+
+  const handleDayPress = (day) => {
+    setSelectedDate(day.dateString);
+  };
+
+  const handleEventPress = (event) => {
+    router.push({
+      pathname: '/event-detail',
+      params: { eventId: event._id },
+    });
+  };
+
+  const renderEventItem = (event) => {
+    const config = EVENT_TYPE_CONFIG[event.event_type] || EVENT_TYPE_CONFIG.other;
+    const startTime = event.all_day
+      ? 'All day'
+      : format(new Date(event.start_date), 'h:mm a');
+
+    return (
+      <TouchableOpacity
+        key={event._id}
+        style={[styles.eventCard, { borderLeftColor: config.color }]}
+        onPress={() => handleEventPress(event)}
+      >
+        <View style={styles.eventIconContainer}>
+          <Ionicons name={config.icon as any} size={24} color={config.color} />
+        </View>
+        <View style={styles.eventDetails}>
+          <Text style={styles.eventTitle}>{event.title}</Text>
+          <Text style={styles.eventTime}>{startTime}</Text>
+          {event.description && (
+            <Text style={styles.eventDescription} numberOfLines={1}>
+              {event.description}
+            </Text>
+          )}
+        </View>
+        <Ionicons name="chevron-forward" size={20} color="#9E9E9E" />
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Decorative Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Calendar</Text>
+        <Text style={styles.headerSubtitle}>Bridgerton Collection</Text>
+      </View>
+
+      <ScrollView style={styles.scrollView}>
+        {/* Calendar */}
+        <View style={styles.calendarContainer}>
+          <Calendar
+            current={selectedDate}
+            onDayPress={handleDayPress}
+            markedDates={markedDates}
+            markingType="multi-dot"
+            theme={{
+              backgroundColor: '#FFF9F5',
+              calendarBackground: '#FFF9F5',
+              textSectionTitleColor: '#4A2C5C',
+              selectedDayBackgroundColor: '#E6D5F5',
+              selectedDayTextColor: '#4A2C5C',
+              todayTextColor: '#9B7EBD',
+              dayTextColor: '#4A2C5C',
+              textDisabledColor: '#D3D3D3',
+              dotColor: '#9B7EBD',
+              selectedDotColor: '#4A2C5C',
+              arrowColor: '#9B7EBD',
+              monthTextColor: '#4A2C5C',
+              indicatorColor: '#9B7EBD',
+              textDayFontFamily: 'System',
+              textMonthFontFamily: 'System',
+              textDayHeaderFontFamily: 'System',
+              textDayFontWeight: '400',
+              textMonthFontWeight: '600',
+              textDayHeaderFontWeight: '500',
+              textDayFontSize: 16,
+              textMonthFontSize: 18,
+              textDayHeaderFontSize: 14,
+            }}
+          />
+        </View>
+
+        {/* Events for Selected Day */}
+        <View style={styles.eventsSection}>
+          <View style={styles.eventsSectionHeader}>
+            <Text style={styles.eventsSectionTitle}>
+              {format(new Date(selectedDate), 'EEEE, MMMM d')}
+            </Text>
+            <Text style={styles.eventsCount}>
+              {selectedDayEvents.length} {selectedDayEvents.length === 1 ? 'event' : 'events'}
+            </Text>
+          </View>
+
+          {loading ? (
+            <ActivityIndicator size="large" color="#9B7EBD" style={styles.loader} />
+          ) : selectedDayEvents.length > 0 ? (
+            selectedDayEvents.map(renderEventItem)
+          ) : (
+            <View style={styles.emptyState}>
+              <Ionicons name="calendar-outline" size={48} color="#D3D3D3" />
+              <Text style={styles.emptyStateText}>No events for this day</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Floating Add Button */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => router.push('/add-event')}
+      >
+        <Ionicons name="add" size={32} color="#FFF" />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF9F5',
+  },
+  header: {
+    padding: 20,
+    paddingTop: 60,
+    backgroundColor: '#E6D5F5',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#4A2C5C',
+    textAlign: 'center',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#9B7EBD',
+    textAlign: 'center',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  calendarContainer: {
+    margin: 16,
+    borderRadius: 20,
+    overflow: 'hidden',
+    backgroundColor: '#FFF',
+    shadowColor: '#4A2C5C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  eventsSection: {
+    padding: 16,
+    paddingBottom: 100,
+  },
+  eventsSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  eventsSectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#4A2C5C',
+  },
+  eventsCount: {
+    fontSize: 14,
+    color: '#9B7EBD',
+    fontStyle: 'italic',
+  },
+  eventCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderLeftWidth: 4,
+    shadowColor: '#4A2C5C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  eventIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FFF9F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  eventDetails: {
+    flex: 1,
+  },
+  eventTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4A2C5C',
+    marginBottom: 4,
+  },
+  eventTime: {
+    fontSize: 14,
+    color: '#9B7EBD',
+  },
+  eventDescription: {
+    fontSize: 12,
+    color: '#9E9E9E',
+    marginTop: 4,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: '#9E9E9E',
+    marginTop: 16,
+    fontStyle: 'italic',
+  },
+  loader: {
+    marginTop: 40,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#9B7EBD',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+});
