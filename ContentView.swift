@@ -1,46 +1,85 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var eventManager: EventManager
     @State private var selectedDate = Date()
+    @State private var showCreateEvent = false
     private let calendar = Calendar.current
 
     var body: some View {
-        VStack {
-            Text("Calendar")
-                .font(.largeTitle)
-                .padding()
+        NavigationStack {
+            VStack {
+                // Month Grid
+                let days = getDaysInMonth(month: calendar.component(.month, from: selectedDate),
+                                           year: calendar.component(.year, from: selectedDate))
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                    ForEach(days, id: \.self) { date in
+                        Text("\(calendar.component(.day, from: date))")
+                            .padding(8)
+                            .background(calendar.isDate(date, inSameDayAs: selectedDate) ? Color.blue : Color.clear)
+                            .foregroundColor(calendar.isDate(date, inSameDayAs: selectedDate) ? .white : .primary)
+                            .clipShape(Circle())
+                            .onTapGesture {
+                                selectedDate = date
+                            }
+                    }
+                }
+                .padding(.horizontal)
 
-            // Month Grid
-            let days = getDaysInMonth(month: calendar.component(.month, from: selectedDate),
-                                       year: calendar.component(.year, from: selectedDate))
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                ForEach(days, id: \.self) { date in
-                    Text("\(calendar.component(.day, from: date))")
-                        .padding()
-                        .background(selectedDate == date ? Color.blue : Color.clear)
-                        .cornerRadius(8)
-                        .onTapGesture {
-                            selectedDate = date
+                Divider()
+
+                // Daily Event List
+                let dayEvents = eventManager.getEventsForDay(selectedDate)
+                List {
+                    Section(header: Text(selectedDate, style: .date).font(.headline)) {
+                        if dayEvents.isEmpty {
+                            Text("No events")
+                                .foregroundColor(.gray)
+                        } else {
+                            ForEach(dayEvents) { event in
+                                NavigationLink {
+                                    EventDetailView(event: event)
+                                        .environmentObject(eventManager)
+                                } label: {
+                                    HStack {
+                                        Circle()
+                                            .fill(Color(hex: event.color))
+                                            .frame(width: 10, height: 10)
+                                        VStack(alignment: .leading) {
+                                            Text(event.title)
+                                                .fontWeight(.medium)
+                                            if !event.allDay {
+                                                Text(event.startDate, style: .time)
+                                                    .font(.caption)
+                                                    .foregroundColor(.gray)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
+                    }
                 }
             }
-
-            // Daily Event List
-            List {
-                Text("Events for \(selectedDate, formatter: DateFormatter.shortDate)")
-                    .font(.headline)
-
-                // Placeholder for events
-                ForEach(getEvents(for: selectedDate), id: \.self) { event in
-                    Text(event)
+            .navigationTitle("Calendar")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: { showCreateEvent = true }) {
+                        Image(systemName: "plus")
+                    }
                 }
+            }
+            .sheet(isPresented: $showCreateEvent) {
+                EventCreationView()
+                    .environmentObject(eventManager)
             }
         }
     }
 
     private func getDaysInMonth(month: Int, year: Int) -> [Date] {
         var days: [Date] = []
-        let range = calendar.range(of: .day, in: .month, for: calendar.date(from: DateComponents(year: year, month: month))!)!
+        guard let monthDate = calendar.date(from: DateComponents(year: year, month: month)),
+              let range = calendar.range(of: .day, in: .month, for: monthDate) else { return days }
         for day in range {
             if let date = calendar.date(from: DateComponents(year: year, month: month, day: day)) {
                 days.append(date)
@@ -48,16 +87,9 @@ struct ContentView: View {
         }
         return days
     }
-
-    private func getEvents(for date: Date) -> [String] {
-        // Fetch events for the selected date
-        // Placeholder data
-        return ["Event 1", "Event 2", "Event 3"]
-    }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
+        .environmentObject(EventManager())
 }
