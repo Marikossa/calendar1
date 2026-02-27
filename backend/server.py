@@ -114,6 +114,7 @@ def event_helper(event) -> dict:
         "icon": event["icon"],
         "recurrence": event.get("recurrence"),
         "reminders": event.get("reminders", []),
+        "guests": event.get("guests", []),
         "created_at": event.get("created_at"),
         "updated_at": event.get("updated_at"),
         "is_recurring_instance": event.get("is_recurring_instance", False),
