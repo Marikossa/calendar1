@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Share, RefreshControl } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { format } from 'date-fns';
 
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 const EVENT_TYPE_CONFIG = {
   meeting: { icon: 'briefcase', color: '#9B7EBD' },
-  birthday: { icon: 'cake', color: '#FFB6C6' },
-  appointment: { icon: 'calendar-check', color: '#A8D5E2' },
+  birthday: { icon: 'cafe', color: '#FFB6C6' },
+  appointment: { icon: 'calendar', color: '#A8D5E2' },
   social: { icon: 'people', color: '#E6D5F5' },
   personal: { icon: 'heart', color: '#FFD6E8' },
   other: { icon: 'star', color: '#D4AF37' },
@@ -22,14 +22,19 @@ export default function CalendarScreen() {
   const [events, setEvents] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedDayEvents, setSelectedDayEvents] = useState([]);
 
-  useEffect(() => {
-    loadEvents();
-  }, []);
+  // Reload events when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadEvents();
+    }, [])
+  );
 
   useEffect(() => {
     loadEventsForDay(selectedDate);
+    createMarkedDates(events);
   }, [selectedDate, events]);
 
   const loadEvents = async () => {
@@ -47,14 +52,19 @@ export default function CalendarScreen() {
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
-        createMarkedDates(data);
       }
     } catch (error) {
       console.error('Error loading events:', error);
       Alert.alert('Error', 'Failed to load events');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadEvents();
   };
 
   const createMarkedDates = (eventsList) => {
@@ -63,7 +73,7 @@ export default function CalendarScreen() {
     eventsList.forEach((event) => {
       const date = event.start_date.split('T')[0];
       if (!marked[date]) {
-        marked[date] = { dots: [] };
+        marked[date] = { dots: [], marked: true };
       }
       marked[date].dots.push({
         color: EVENT_TYPE_CONFIG[event.event_type]?.color || '#4A2C5C',
@@ -100,6 +110,25 @@ export default function CalendarScreen() {
     });
   };
 
+  const handleShareEvent = async (event) => {
+    try {
+      const config = EVENT_TYPE_CONFIG[event.event_type] || EVENT_TYPE_CONFIG.other;
+      const startTime = event.all_day
+        ? 'All day'
+        : format(new Date(event.start_date), 'h:mm a');
+      const date = format(new Date(event.start_date), 'EEEE, MMMM d, yyyy');
+
+      const message = `📅 ${config.label}: ${event.title}\n📆 ${date}\n⏰ ${startTime}${event.description ? `\n\n${event.description}` : ''}`;
+
+      await Share.share({
+        message,
+        title: event.title,
+      });
+    } catch (error) {
+      console.error('Error sharing event:', error);
+    }
+  };
+
   const renderEventItem = (event) => {
     const config = EVENT_TYPE_CONFIG[event.event_type] || EVENT_TYPE_CONFIG.other;
     const startTime = event.all_day
@@ -123,7 +152,19 @@ export default function CalendarScreen() {
               {event.description}
             </Text>
           )}
+          {event.guests && event.guests.length > 0 && (
+            <View style={styles.guestsRow}>
+              <Ionicons name="people-outline" size={12} color="#9B7EBD" />
+              <Text style={styles.guestsText}>{event.guests.length} guest{event.guests.length > 1 ? 's' : ''}</Text>
+            </View>
+          )}
         </View>
+        <TouchableOpacity
+          style={styles.shareButton}
+          onPress={() => handleShareEvent(event)}
+        >
+          <Ionicons name="share-outline" size={20} color="#9B7EBD" />
+        </TouchableOpacity>
         <Ionicons name="chevron-forward" size={20} color="#9E9E9E" />
       </TouchableOpacity>
     );
@@ -137,7 +178,17 @@ export default function CalendarScreen() {
         <Text style={styles.headerSubtitle}>Bridgerton Collection</Text>
       </View>
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView 
+        style={styles.scrollView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#9B7EBD"
+            colors={['#9B7EBD']}
+          />
+        }
+      >
         {/* Calendar */}
         <View style={styles.calendarContainer}>
           <Calendar
@@ -306,6 +357,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9E9E9E',
     marginTop: 4,
+  },
+  guestsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  guestsText: {
+    fontSize: 12,
+    color: '#9B7EBD',
+    marginLeft: 4,
+  },
+  shareButton: {
+    padding: 8,
+    marginRight: 4,
   },
   emptyState: {
     alignItems: 'center',
