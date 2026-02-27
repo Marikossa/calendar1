@@ -10,6 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.calendar1.CalendarApp",
       "infoPlist": {
         "UIBackgroundModes": ["remote-notification"],
         "NSUserNotificationsUsageDescription": "Get event reminders for your calendar"
