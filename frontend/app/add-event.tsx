@@ -235,8 +235,8 @@ export default function AddEventScreen() {
           </View>
         </View>
 
-        {/* Duration for Red Days */}
-        {eventType === 'red_days' && (
+        {/* Duration for Red Days and Vacation */}
+        {(eventType === 'red_days' || eventType === 'vacation') && (
           <View style={styles.section}>
             <Text style={styles.label}>Duration (Days)</Text>
             <View style={styles.durationContainer}>
@@ -244,14 +244,22 @@ export default function AddEventScreen() {
                 style={styles.durationButton}
                 onPress={() => setDuration(Math.max(1, duration - 1))}
               >
-                <Ionicons name="remove-circle" size={32} color="#FFB5B5" />
+                <Ionicons 
+                  name="remove-circle" 
+                  size={32} 
+                  color={eventType === 'red_days' ? '#FFB5B5' : '#A8D5E2'} 
+                />
               </TouchableOpacity>
               <Text style={styles.durationText}>{duration} {duration === 1 ? 'day' : 'days'}</Text>
               <TouchableOpacity
                 style={styles.durationButton}
                 onPress={() => setDuration(duration + 1)}
               >
-                <Ionicons name="add-circle" size={32} color="#FFB5B5" />
+                <Ionicons 
+                  name="add-circle" 
+                  size={32} 
+                  color={eventType === 'red_days' ? '#FFB5B5' : '#A8D5E2'} 
+                />
               </TouchableOpacity>
             </View>
             <Text style={styles.durationHint}>
