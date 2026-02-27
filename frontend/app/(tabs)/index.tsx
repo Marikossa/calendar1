@@ -277,6 +277,51 @@ export default function CalendarScreen() {
       >
         <Ionicons name="add" size={32} color="#FFF" />
       </TouchableOpacity>
+
+      {/* Year Picker Modal */}
+      <Modal
+        visible={showYearPicker}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowYearPicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.yearPickerModal}>
+            <Text style={styles.modalTitle}>Select Year</Text>
+            <ScrollView style={styles.yearList}>
+              {Array.from({ length: 21 }, (_, i) => new Date().getFullYear() - 10 + i).map((year) => (
+                <TouchableOpacity
+                  key={year}
+                  style={[
+                    styles.yearItem,
+                    year === parseInt(format(new Date(currentMonth), 'yyyy')) && styles.yearItemSelected,
+                  ]}
+                  onPress={() => {
+                    const newDate = format(new Date(year, new Date(currentMonth).getMonth(), 1), 'yyyy-MM-dd');
+                    setCurrentMonth(newDate);
+                    setShowYearPicker(false);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.yearItemText,
+                      year === parseInt(format(new Date(currentMonth), 'yyyy')) && styles.yearItemTextSelected,
+                    ]}
+                  >
+                    {year}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowYearPicker(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ImageBackground>
   );
 }
