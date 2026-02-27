@@ -111,6 +111,8 @@ def event_helper(event) -> dict:
         "reminders": event.get("reminders", []),
         "created_at": event.get("created_at"),
         "updated_at": event.get("updated_at"),
+        "is_recurring_instance": event.get("is_recurring_instance", False),
+        "original_event_id": event.get("original_event_id"),
     }
 
 def expand_recurring_events(event: dict, start_date: datetime, end_date: datetime) -> List[dict]:
