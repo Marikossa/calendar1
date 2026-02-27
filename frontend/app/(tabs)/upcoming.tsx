@@ -12,17 +12,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { format, isToday, isTomorrow, isThisWeek, parseISO } from 'date-fns';
+import { EVENT_TYPE_CONFIG } from '../constants';
 
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-const EVENT_TYPE_CONFIG = {
-  meeting: { icon: 'briefcase', color: '#9B7EBD' },
-  birthday: { icon: 'cake', color: '#FFB6C6' },
-  appointment: { icon: 'calendar-check', color: '#A8D5E2' },
-  social: { icon: 'people', color: '#E6D5F5' },
-  personal: { icon: 'heart', color: '#FFD6E8' },
-  other: { icon: 'star', color: '#D4AF37' },
-};
 
 export default function UpcomingScreen() {
   const router = useRouter();
