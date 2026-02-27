@@ -264,10 +264,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   headerTitle: {
-    fontSize: 36,
-    fontWeight: '700',
+    fontSize: 42,
+    fontWeight: '400',
+    fontStyle: 'italic',
+    fontFamily: 'Georgia', // Elegant serif as fallback for script
     color: '#8B4789',
     textAlign: 'center',
+    letterSpacing: 1,
     textShadowColor: 'rgba(255, 255, 255, 0.9)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
