@@ -74,7 +74,13 @@ export default function AddEventScreen() {
   };
 
   const handleSave = async () => {
-    if (!title.trim()) {
+    // Auto-generate title for red_days and vacation
+    let eventTitle = title.trim();
+    if (eventType === 'red_days' && !eventTitle) {
+      eventTitle = `Red days (${duration} ${duration === 1 ? 'day' : 'days'})`;
+    } else if (eventType === 'vacation' && !eventTitle) {
+      eventTitle = `Vacation (${duration} ${duration === 1 ? 'day' : 'days'})`;
+    } else if (!eventTitle) {
       Alert.alert('Error', 'Please enter an event title');
       return;
     }
