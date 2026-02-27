@@ -85,6 +85,7 @@ class EventCreate(BaseModel):
     icon: str
     recurrence: Optional[RecurrenceRule] = None
     reminders: List[Reminder] = []
+    guests: List[str] = []
 
 class EventUpdate(BaseModel):
     title: Optional[str] = None
@@ -97,6 +98,7 @@ class EventUpdate(BaseModel):
     icon: Optional[str] = None
     recurrence: Optional[RecurrenceRule] = None
     reminders: Optional[List[Reminder]] = None
+    guests: Optional[List[str]] = None
 
 # Utility functions
 def event_helper(event) -> dict:
