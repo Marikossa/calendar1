@@ -164,7 +164,7 @@ export default function UpcomingScreen() {
           </View>
         )}
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 }
 
