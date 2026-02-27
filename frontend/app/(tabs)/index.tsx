@@ -172,11 +172,16 @@ export default function CalendarScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Decorative Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Calendar</Text>
-        <Text style={styles.headerSubtitle}>Bridgerton Collection</Text>
-      </View>
+      {/* Decorative Header with Background Image */}
+      <ImageBackground
+        source={require('../../assets/images/lady-background.png')}
+        style={styles.header}
+        resizeMode="cover"
+      >
+        <View style={styles.headerOverlay}>
+          <Text style={styles.headerTitle}>Lady's Calendar</Text>
+        </View>
+      </ImageBackground>
 
       <ScrollView 
         style={styles.scrollView}
