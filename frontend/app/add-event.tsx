@@ -169,17 +169,19 @@ export default function AddEventScreen() {
       keyboardVerticalOffset={100}
     >
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* Title */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Title *</Text>
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Event title"
-            placeholderTextColor="#9E9E9E"
-          />
-        </View>
+        {/* Title - Hidden for red_days and vacation */}
+        {eventType !== 'red_days' && eventType !== 'vacation' && (
+          <View style={styles.section}>
+            <Text style={styles.label}>Title *</Text>
+            <TextInput
+              style={styles.input}
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Event title"
+              placeholderTextColor="#9E9E9E"
+            />
+          </View>
+        )}
 
         {/* Description */}
         <View style={styles.section}>
