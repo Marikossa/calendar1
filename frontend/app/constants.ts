@@ -3,6 +3,7 @@ export const EVENT_TYPES = [
   { id: 'meeting', label: 'Meeting', icon: 'briefcase', color: '#C7B8EA' },
   { id: 'birthday', label: 'Birthday', icon: 'cafe', color: '#FFB6D9' },
   { id: 'vacation', label: 'Vacation', icon: 'airplane', color: '#A8D5E2' },
+  { id: 'event', label: 'Event', icon: 'calendar-sharp', color: '#D4C5F9' },
   { id: 'red_days', label: 'Red days', icon: 'flag', color: '#FFB5B5' },
 ];
 
@@ -10,6 +11,7 @@ export const EVENT_TYPE_CONFIG = {
   meeting: { icon: 'briefcase', color: '#C7B8EA', label: 'Meeting' },
   birthday: { icon: 'cafe', color: '#FFB6D9', label: 'Birthday' },
   vacation: { icon: 'airplane', color: '#A8D5E2', label: 'Vacation' },
+  event: { icon: 'calendar-sharp', color: '#D4C5F9', label: 'Event' },
   red_days: { icon: 'flag', color: '#FFB5B5', label: 'Red days' },
 };
 
