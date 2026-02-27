@@ -12,25 +12,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { format, parseISO } from 'date-fns';
 import * as Notifications from 'expo-notifications';
+import { EVENT_TYPE_CONFIG, RECURRENCE_LABELS } from './constants';
 
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-const EVENT_TYPE_CONFIG = {
-  meeting: { icon: 'briefcase', color: '#9B7EBD', label: 'Meeting' },
-  birthday: { icon: 'cake', color: '#FFB6C6', label: 'Birthday' },
-  appointment: { icon: 'calendar-check', color: '#A8D5E2', label: 'Appointment' },
-  social: { icon: 'people', color: '#E6D5F5', label: 'Social' },
-  personal: { icon: 'heart', color: '#FFD6E8', label: 'Personal' },
-  other: { icon: 'star', color: '#D4AF37', label: 'Other' },
-};
-
-const RECURRENCE_LABELS = {
-  none: 'Does not repeat',
-  daily: 'Daily',
-  weekly: 'Weekly',
-  monthly: 'Monthly',
-  yearly: 'Yearly',
-};
 
 export default function EventDetailScreen() {
   const router = useRouter();
