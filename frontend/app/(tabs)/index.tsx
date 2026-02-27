@@ -4,17 +4,9 @@ import { Calendar } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { format } from 'date-fns';
+import { EVENT_TYPE_CONFIG } from '../constants';
 
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-const EVENT_TYPE_CONFIG = {
-  meeting: { icon: 'briefcase', color: '#9B7EBD' },
-  birthday: { icon: 'cafe', color: '#FFB6C6' },
-  appointment: { icon: 'calendar', color: '#A8D5E2' },
-  social: { icon: 'people', color: '#E6D5F5' },
-  personal: { icon: 'heart', color: '#FFD6E8' },
-  other: { icon: 'star', color: '#D4AF37' },
-};
 
 export default function CalendarScreen() {
   const router = useRouter();
