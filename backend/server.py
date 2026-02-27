@@ -99,7 +99,7 @@ class EventUpdate(BaseModel):
 
 # Utility functions
 def event_helper(event) -> dict:
-    result = {
+    return {
         "_id": str(event["_id"]),
         "title": event["title"],
         "description": event.get("description"),
@@ -116,12 +116,6 @@ def event_helper(event) -> dict:
         "is_recurring_instance": event.get("is_recurring_instance", False),
         "original_event_id": event.get("original_event_id"),
     }
-    
-    # Debug: Log when we have recurring instance data
-    if event.get("is_recurring_instance"):
-        print(f"DEBUG: Processing recurring instance for event {event.get('_id')}")
-    
-    return result
 
 def expand_recurring_events(event: dict, start_date: datetime, end_date: datetime) -> List[dict]:
     """Expand a recurring event into individual occurrences within the date range"""
