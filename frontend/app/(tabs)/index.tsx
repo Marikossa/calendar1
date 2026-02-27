@@ -196,63 +196,39 @@ export default function CalendarScreen() {
           />
         }
       >
-        {/* Year Navigator */}
-        <View style={styles.yearNavigator}>
-          <TouchableOpacity
-            style={styles.yearNavButton}
-            onPress={() => setCurrentYear(currentYear - 1)}
-          >
-            <Ionicons name="chevron-back" size={24} color="#8B4789" />
-          </TouchableOpacity>
-          <Text style={styles.yearText}>{currentYear}</Text>
-          <TouchableOpacity
-            style={styles.yearNavButton}
-            onPress={() => setCurrentYear(currentYear + 1)}
-          >
-            <Ionicons name="chevron-forward" size={24} color="#8B4789" />
-          </TouchableOpacity>
+        {/* Calendar */}
+        <View style={styles.calendarContainer}>
+          <Calendar
+            current={selectedDate}
+            onDayPress={handleDayPress}
+            markedDates={markedDates}
+            markingType="multi-dot"
+            theme={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              calendarBackground: 'rgba(255, 255, 255, 0.95)',
+              textSectionTitleColor: '#8B4789',
+              selectedDayBackgroundColor: '#FFB6D9',
+              selectedDayTextColor: '#8B4789',
+              todayTextColor: '#D946A6',
+              dayTextColor: '#5C3D5E',
+              textDisabledColor: '#D3B5D3',
+              dotColor: '#D946A6',
+              selectedDotColor: '#8B4789',
+              arrowColor: '#8B4789',
+              monthTextColor: '#8B4789',
+              indicatorColor: '#D946A6',
+              textDayFontFamily: 'System',
+              textMonthFontFamily: 'System',
+              textDayHeaderFontFamily: 'System',
+              textDayFontWeight: '400',
+              textMonthFontWeight: '600',
+              textDayHeaderFontWeight: '500',
+              textDayFontSize: 16,
+              textMonthFontSize: 18,
+              textDayHeaderFontSize: 14,
+            }}
+          />
         </View>
-
-        {/* All 12 Months of the Year */}
-        {Array.from({ length: 12 }, (_, i) => {
-          const monthDate = format(new Date(currentYear, i, 1), 'yyyy-MM-dd');
-          return (
-            <View key={i} style={styles.monthCalendarContainer}>
-              <Calendar
-                current={monthDate}
-                onDayPress={handleDayPress}
-                markedDates={markedDates}
-                markingType="multi-dot"
-                hideArrows={true}
-                hideExtraDays={true}
-                theme={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  calendarBackground: 'rgba(255, 255, 255, 0.95)',
-                  textSectionTitleColor: '#8B4789',
-                  selectedDayBackgroundColor: '#FFB6D9',
-                  selectedDayTextColor: '#8B4789',
-                  todayTextColor: '#D946A6',
-                  dayTextColor: '#5C3D5E',
-                  textDisabledColor: '#D3B5D3',
-                  dotColor: '#D946A6',
-                  selectedDotColor: '#8B4789',
-                  arrowColor: '#8B4789',
-                  monthTextColor: '#8B4789',
-                  indicatorColor: '#D946A6',
-                  textDayFontFamily: 'System',
-                  textMonthFontFamily: 'System',
-                  textDayHeaderFontFamily: 'System',
-                  textDayFontWeight: '400',
-                  textMonthFontWeight: '600',
-                  textDayHeaderFontWeight: '500',
-                  textDayFontSize: 14,
-                  textMonthFontSize: 16,
-                  textDayHeaderFontSize: 12,
-                }}
-              />
-            </View>
-          );
-        })}
 
         {/* Events for Selected Day */}
         <View style={styles.eventsSection}>
