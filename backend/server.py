@@ -66,6 +66,8 @@ class Event(BaseModel):
     reminders: List[Reminder] = []
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
+    is_recurring_instance: Optional[bool] = False
+    original_event_id: Optional[str] = None
 
     class Config:
         populate_by_name = True
