@@ -123,17 +123,15 @@ export default function UpcomingScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Decorative Header with Background Image */}
-      <ImageBackground
-        source={require('../../assets/images/lady-background.png')}
-        style={styles.header}
-        resizeMode="cover"
-      >
-        <View style={styles.headerOverlay}>
-          <Text style={styles.headerTitle}>Upcoming Events</Text>
-        </View>
-      </ImageBackground>
+    <ImageBackground
+      source={require('../../assets/images/lady-background.png')}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Upcoming Events</Text>
+      </View>
 
       <ScrollView
         style={styles.scrollView}
@@ -142,8 +140,8 @@ export default function UpcomingScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#9B7EBD"
-            colors={['#9B7EBD']}
+            tintColor="#8B4789"
+            colors={['#8B4789']}
           />
         }
       >
