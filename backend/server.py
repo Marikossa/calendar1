@@ -155,6 +155,7 @@ def expand_recurring_events(event: dict, start_date: datetime, end_date: datetim
     
     # Generate occurrences
     occurrences = []
+    first_occurrence = True
     for occurrence_date in rrule(**rrule_params):
         if start_date <= occurrence_date <= end_date:
             occurrence_event = event.copy()
@@ -166,8 +167,15 @@ def expand_recurring_events(event: dict, start_date: datetime, end_date: datetim
                 occurrence_event["end_date"] = new_end.isoformat()
             
             occurrence_event["start_date"] = occurrence_date.isoformat()
-            occurrence_event["is_recurring_instance"] = True
-            occurrence_event["original_event_id"] = str(event["_id"])
+            
+            # First occurrence is the original event, subsequent ones are recurring instances
+            if first_occurrence:
+                occurrence_event["is_recurring_instance"] = False
+                first_occurrence = False
+            else:
+                occurrence_event["is_recurring_instance"] = True
+                occurrence_event["original_event_id"] = str(event["_id"])
+            
             occurrences.append(occurrence_event)
     
     return occurrences
