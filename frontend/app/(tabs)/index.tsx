@@ -197,11 +197,26 @@ export default function CalendarScreen() {
           />
         }
       >
+        {/* Year Selector */}
+        <View style={styles.yearSelectorContainer}>
+          <TouchableOpacity
+            style={styles.yearButton}
+            onPress={() => setShowYearPicker(true)}
+          >
+            <Ionicons name="calendar-outline" size={20} color="#8B4789" />
+            <Text style={styles.yearButtonText}>
+              {format(new Date(currentMonth), 'yyyy')}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color="#8B4789" />
+          </TouchableOpacity>
+        </View>
+
         {/* Calendar */}
         <View style={styles.calendarContainer}>
           <Calendar
-            current={selectedDate}
+            current={currentMonth}
             onDayPress={handleDayPress}
+            onMonthChange={(month) => setCurrentMonth(month.dateString)}
             markedDates={markedDates}
             markingType="multi-dot"
             theme={{
