@@ -34,6 +34,16 @@ export default function AddEventScreen() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [datePickerMode, setDatePickerMode] = useState<'date' | 'time'>('date');
   const [saving, setSaving] = useState(false);
+  const [duration, setDuration] = useState(1); // Duration in days for Red days
+
+  // Update end date when event type changes to red_days or duration changes
+  useEffect(() => {
+    if (eventType === 'red_days') {
+      const newEndDate = new Date(startDate);
+      newEndDate.setDate(newEndDate.getDate() + duration - 1);
+      setEndDate(newEndDate);
+    }
+  }, [eventType, duration, startDate]);
 
   const scheduleNotifications = async (event, eventId) => {
     const notifications = [];
